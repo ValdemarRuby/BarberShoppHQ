@@ -41,6 +41,9 @@ post '/visit' do
 		@error = @c.errors.full_messages.first
 		erb :visit
 	end
+end
 
-
+get '/barber/:id' do
+	@barber = Barber.find(params[:id])
+	erb :barber
 end
