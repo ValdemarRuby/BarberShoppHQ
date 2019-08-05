@@ -8,6 +8,10 @@ set :database, "sqlite3:barbershop.db"
 
 # создание сущности
 class Client < ActiveRecord::Base
+	validates :name, presence: true
+	validates :phone, presence: true
+	validates :datestamp, presence: true
+	validates :barber, presence: true
 end
 
 class Barber < ActiveRecord::Base
@@ -28,18 +32,14 @@ end
 
 
 post '/visit' do
-	@username = params[:username]
-	@phone = params[:phone]
-	@datestamp = params[:datestamp]
-	@barber = params[:barber]
-	@color = params[:color]
 
-	user = Client.new :name => "#{@username}", :phone => "#{@phone}", :datestamp => "#{@datestamp}", :barber => "#{@barber}", :color => "#{@color}"
-	if user.new_record?
-		user.save
+	c = Client.new params[:client]
+	if c.save
+		erb "<h2>Спасибо вы записались</h2>"
 	else
-		@error = 'You are already recorded!'
+		@error = c.errors.full_messages.first
+		erb :visit
 	end
 
-	erb "OK, username is #{@username}, #{@phone}, #{@datestamp}, #{@barber}, #{@color}"
+
 end
